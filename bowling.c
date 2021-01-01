@@ -26,17 +26,22 @@ int get_ints(char *line, int *ints) {
     }
     return n;
 }
+#define START int h=0
+#define ADVANCE_FRAME h++
+#define IS_NEW_FRAME (h % 2 == 0)
+#define FRAME_NB (h / 2)
 int score(int *rolls, int n) {
-    int h = 0;
+    START;
     int result = 0;
-    for(int i = 0; i < n && h / 2 < 10; i++, h++) {
+    for(int i = 0; i < n && FRAME_NB < 10; i++) {
         result += rolls[i];
-        if ( h % 2 == 0  &&  rolls[i] == 10 ) {
+        if (IS_NEW_FRAME && rolls[i] == 10) {
             result += rolls[i+1] + rolls[i+2];
-            h++;
+            ADVANCE_FRAME;
         }
-        else if ( h % 2 == 1  &&  rolls[i-1] + rolls[i] == 10 ) 
+        else if (!IS_NEW_FRAME &&  rolls[i-1] + rolls[i] == 10) 
             result += rolls[i+1];
+        ADVANCE_FRAME;
     }
     return result;
 }
